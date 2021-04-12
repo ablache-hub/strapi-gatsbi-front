@@ -4,6 +4,7 @@ import Img from "gatsby-image";
 import Moment from "react-moment";
 import Layout from "../components/layout";
 import Markdown from "react-markdown";
+import Comments from "../components/comments";
 
 export const query = graphql`
   query ArticleQuery($slug: String!) {
@@ -32,11 +33,20 @@ export const query = graphql`
         }
       }
     }
+       allStrapiComments(filter: {article: {slug: { eq: $slug }, status: { eq: "published" }}}) {
+    nodes {
+      Email
+      Message
+      created_at(formatString: "DD MMMM YYYY à HH:MM", locale: "FR")
+      strapiId
+    }
+  }
   }
 `;
 
 const Article = ({ data }) => {
     const article = data.strapiArticle;
+    const comments = data.allStrapiComments.nodes;
     const seo = {
         metaTitle: article.title,
         metaDescription: article.description,
@@ -83,6 +93,31 @@ const Article = ({ data }) => {
                         </div>
                     </div>
                 </div>
+                <div className="comment-section">
+                    <h4 className="comment-header">Commentaires</h4>
+                    <Comments comments={comments}/>
+                </div>
+         {/*       <div>
+                <form className="comment-form">
+                    <h4 className="comment-post">Laissez un commentaire</h4>
+                    <input
+                        placeholder="Votre pseudo/nom"
+                        value={submit.name}
+                        name="name"
+                        // onChange={submit.handleChange}
+                    />
+                    <textarea
+                        placeholder="Votre commentaire"
+                        rows="4"
+                        name="comment"
+                        value={submit.comment}
+                        // onChange={submit.handleChange}
+                    />
+                    <div>
+                        <button type={"submit"} className="button submit-button">Envoyer</button>
+                    </div>
+                </form>
+            </div>*/}
             </div>
         </Layout>
     );

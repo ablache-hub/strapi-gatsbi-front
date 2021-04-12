@@ -1,5 +1,5 @@
-exports.createPages = async ({ graphql, actions }) => {
-    const { createPage } = actions;
+exports.createPages = async ({graphql, actions}) => {
+    const {createPage} = actions;
     const result = await graphql(
         `
       {
@@ -19,7 +19,14 @@ exports.createPages = async ({ graphql, actions }) => {
             }
           }
         }
-      }
+      comments: allStrapiComments {
+          edges {
+            node {
+              strapiId
+            }
+         }
+      }       
+    }
     `
     );
 
@@ -56,7 +63,7 @@ exports.createPages = async ({ graphql, actions }) => {
     });
 };
 
-module.exports.onCreateNode = async ({ node, actions, createNodeId }) => {
+module.exports.onCreateNode = async ({node, actions, createNodeId}) => {
     const crypto = require(`crypto`);
 
     if (node.internal.type === "StrapiArticle") {
